@@ -11,8 +11,7 @@ module.exports = {
       table: 'Cities',
       field: 'id'
     },
-    onUpdate: 'CASCADE',
-    onDELETE: 'CASCADE'
+    onDelete: 'CASCADE',
    });
   },
 
@@ -22,3 +21,7 @@ module.exports = {
 };
 
 
+/**
+ * Query to check if constraint has been applied
+ * select * from INFORMATION_SCHEMA.KEY_COLUMN_USAGE where TABLE_NAME = 'airports' AND CONSTRAINT_SCHEMA = 'flights';
+ */
