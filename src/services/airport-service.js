@@ -54,10 +54,35 @@ async function destroyAirport(id) {
         throw new AppError('Cannot destroy the airport', StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
- 
+
+
+async function updateAirport(id, data){
+    try {
+        const airport = await airportRepository.update(id, data);
+        return airport;
+    } catch(error) {
+        if(error.name == 'SequelizeValidationError') {
+            let explanation = [];
+            error.errors.forEach((err) => {
+                explanation.push(err.message);
+            });
+            throw new AppError(explanation, StatusCodes.BAD_REQUEST);
+        }
+        else if(error.name == "SequelizeForeignKeyConstraintError"){
+            throw new AppError(error.message, StatusCodes.BAD_REQUEST);
+        }
+        else if(error.statusCode == StatusCodes.NOT_FOUND) {
+            throw new AppError('The airplane you requested to update is not present', error.statusCode);
+        }
+        throw new AppError('Cannot update the Airport object', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
+
+
 module.exports = {
     createAirport,
     getAirports,
     getAirport,
-    destroyAirport
+    destroyAirport,
+    updateAirport
 }

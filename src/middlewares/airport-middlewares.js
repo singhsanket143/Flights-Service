@@ -28,6 +28,20 @@ function validateCreateRequest(req, res, next) {
     next();
 }
 
+
+function validateUpdateRequest(req, res, next) {
+    const bodyReq = req.body;
+    if(!bodyReq.name && !bodyReq.code && !bodyReq.cityId && !bodyReq.address) {
+        ErrorResponse.message = 'Something went wrong while updating the airport';
+        ErrorResponse.error = new AppError(['None of the parameters (name, code, cityId and address) found in the oncoming request in the correct form'], StatusCodes.BAD_REQUEST);
+        return res
+                .status(StatusCodes.BAD_REQUEST)
+                .json(ErrorResponse);
+    }
+    next();
+}
+
 module.exports = {
-    validateCreateRequest
+    validateCreateRequest,
+    validateUpdateRequest
 }
