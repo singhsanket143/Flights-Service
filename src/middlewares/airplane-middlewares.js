@@ -14,6 +14,19 @@ function validateCreateRequest(req, res, next) {
     next();
 }
 
+
+function validateUpdateRequest(req, res, next) {
+    if(!req.body.modelNumber && !req.body.capacity) {
+        ErrorResponse.message = 'Something went wrong while updating the airplane';
+        ErrorResponse.error = new AppError(['Model Number and Capacity both not found in the oncoming request in the correct form'], StatusCodes.BAD_REQUEST);
+        return res
+                .status(StatusCodes.BAD_REQUEST)
+                .json(ErrorResponse);
+    }
+    next();
+}
+
 module.exports = {
-    validateCreateRequest
+    validateCreateRequest,
+    validateUpdateRequest
 }
