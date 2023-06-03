@@ -11,4 +11,9 @@ router.post('/',
         CityController.createCity);
 
 
+// /api/v1/cities/:id PATCH
+router.patch('/:id', 
+        CityMiddlewares.validateCreateRequest,
+        CityController.updateCity);
+
 module.exports = router;
