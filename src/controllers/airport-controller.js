@@ -85,9 +85,45 @@ async function destroyAirport(req, res) {
     }
 }
 
+
+/**
+ * PATCH : /airports 
+ * req-body {name: 'IGI', cityId: 5, code: 'DEL'}
+ */
+async function updateAirport(req, res) {
+    try {
+        const bodyReq = req.body;
+        const bodyData = {}
+        if(bodyReq.name){
+            bodyData.name = bodyReq.name;
+        }
+        if(bodyReq.code){
+            bodyData.code = bodyReq.code;
+        }
+        if(bodyReq.address){
+            bodyData.address = bodyReq.address;
+        }
+        if(bodyReq.cityId){
+            bodyData.cityId = bodyReq.cityId;
+        }
+        const airport = await AirportService.updateAirport(req.params.id, bodyData);
+        SuccessResponse.data = airport;
+        return res
+                .status(StatusCodes.CREATED)
+                .json(SuccessResponse);
+    } catch(error) {
+        ErrorResponse.error = error;
+        return res
+                .status(error.statusCode)
+                .json(ErrorResponse);
+    }
+}
+
+
 module.exports = {
     createAirport,
     getAirports,
     getAirport,
-    destroyAirport
+    destroyAirport,
+    updateAirport
 }
