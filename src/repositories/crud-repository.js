@@ -20,7 +20,7 @@ class CrudRepository {
             }
         });
         if(!response) {
-            throw new AppError('Not able to fund the resource', StatusCodes.NOT_FOUND);
+            throw new AppError('Not able to find the resource', StatusCodes.NOT_FOUND);
         }
         return response;
     }
@@ -28,7 +28,7 @@ class CrudRepository {
     async get(data) {
         const response = await this.model.findByPk(data);
         if(!response) {
-            throw new AppError('Not able to fund the resource', StatusCodes.NOT_FOUND);
+            throw new AppError('Not able to find the resource', StatusCodes.NOT_FOUND);
         }
         return response;
     }
@@ -43,7 +43,11 @@ class CrudRepository {
             where: {
                 id: id
             }
-        })
+        });
+        //Update returns an array with its first element as the no. of rows affected
+        if(!response[0]) {
+            throw new AppError('Not able to find or update the resource', StatusCodes.NOT_FOUND);
+        }
         return response;
     }
 }
