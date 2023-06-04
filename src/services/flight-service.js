@@ -2,12 +2,21 @@ const { StatusCodes } = require('http-status-codes');
 const { Op } = require('sequelize');
 const { FlightRepository } = require('../repositories');
 const AppError = require('../utils/errors/app-error');
+const { datetimeHelpers } = require('../utils/helpers');
 
 
 const flightRepository = new FlightRepository();
 
 async function createFlight(data) {
     try {
+        //Departure and arrival time validation
+        if(!datetimeHelpers.compareTime(data.arrivalTime, data.departureTime)){
+            throw new AppError('Arrival time must be greater than departure time', StatusCodes.BAD_REQUEST);
+        }
+        //Departure and arrival airport cannot be same
+        else if(data.departureAirportId == data.arrivalAirportId){
+            throw new AppError('Departure and arrival airport reference cannot be same', StatusCodes.BAD_REQUEST);
+        }
         const flight = await flightRepository.create(data);
         return flight;
     } catch(error) {
@@ -17,6 +26,9 @@ async function createFlight(data) {
                 explanation.push(err.message);
             });
             throw new AppError(explanation, StatusCodes.BAD_REQUEST);
+        }
+        else if(error.name == "SequelizeForeignKeyConstraintError" || error.name == "SequelizeDatabaseError" || error.statusCode == StatusCodes.BAD_REQUEST){
+            throw new AppError(error.message, StatusCodes.BAD_REQUEST);
         }
         throw new AppError('Cannot create a new Flight object', StatusCodes.INTERNAL_SERVER_ERROR);
     }
