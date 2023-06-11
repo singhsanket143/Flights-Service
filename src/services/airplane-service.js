@@ -58,11 +58,11 @@ async function updateAirplane(id,data) {
     try {
         const response = await airplaneRepository.update(id,data);
         return response;
-    } catch (error) {
-        if(error.statusCodes = StatusCodes.NOT_FOUND) {
-            throw new AppError('The requested airplane to update does not exist',error.statusCodes)
+    } catch(error) {
+        if(error.statusCode == StatusCodes.NOT_FOUND) {
+            throw new AppError('The airplane you requested to delete is not present', error.statusCode);
         }
-        throw new AppError('Cannot fetch data of all the airplanes', StatusCodes.INTERNAL_SERVER_ERROR );
+        throw new AppError('Cannot fetch data of all the airplanes', StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
  
