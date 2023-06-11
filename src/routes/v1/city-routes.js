@@ -10,5 +10,11 @@ router.post('/',
         CityMiddlewares.validateCreateRequest,
         CityController.createCity);
 
-
+// /api/v1/cities/:id DELETE
+router.delete('/:id', 
+        CityController.destroyCity);
+// /api/v1/airplanes/:id PATCH
+router.patch('/:id', 
+                CityController.updateCity);
+        
 module.exports = router;
