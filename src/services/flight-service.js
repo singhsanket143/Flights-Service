@@ -2,12 +2,18 @@ const { StatusCodes } = require('http-status-codes');
 const { Op } = require('sequelize');
 const { FlightRepository } = require('../repositories');
 const AppError = require('../utils/errors/app-error');
-
+const { compareTime } = require('../utils/helpers/datetime-helpers');
 
 const flightRepository = new FlightRepository();
 
 async function createFlight(data) {
     try {
+        if (compareTime(data.arrivalTime, data.departureTime)) {
+          throw new AppError(
+            "Departure time cannot be lesser than arrival time",
+            StatusCodes.BAD_REQUEST
+          );
+        }
         const flight = await flightRepository.create(data);
         return flight;
     } catch(error) {
@@ -17,6 +23,12 @@ async function createFlight(data) {
                 explanation.push(err.message);
             });
             throw new AppError(explanation, StatusCodes.BAD_REQUEST);
+        }
+        if (error.statusCode == StatusCodes.BAD_REQUEST) {
+          throw new AppError(
+            "Departure time cannot be lesser than arrival time",
+            StatusCodes.BAD_REQUEST
+          );
         }
         throw new AppError('Cannot create a new Flight object', StatusCodes.INTERNAL_SERVER_ERROR);
     }

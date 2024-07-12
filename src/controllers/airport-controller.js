@@ -85,9 +85,21 @@ async function destroyAirport(req, res) {
     }
 }
 
+async function updateAirport(req, res) {
+  try {
+    const airport = await AirportService.updateAirport(req.params.id, req.body);
+    SuccessResponse.data = airport;
+    return res.status(StatusCodes.OK).json(SuccessResponse);
+  } catch (error) {
+    ErrorResponse.error = error;
+    return res.status(error.statusCode).json(ErrorResponse);
+  }
+}
+
 module.exports = {
     createAirport,
     getAirports,
     getAirport,
-    destroyAirport
+    destroyAirport,
+    updateAirport
 }
